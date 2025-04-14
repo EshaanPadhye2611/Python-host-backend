@@ -127,8 +127,9 @@ def get_jobs_from_linkedin_multiple_queries(queries, location="Remote"):
     options.add_argument("--headless")
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
+    options.binary_location = "/usr/bin/google-chrome"  # Path to Chrome binary in Render environment
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-
+    
     job_list = []
     for query in queries:
         try:
