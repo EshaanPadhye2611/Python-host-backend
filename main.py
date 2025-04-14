@@ -37,7 +37,7 @@ tfidf = joblib.load("tfidf_vectorizer.joblib")
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+ allow_origins=["https://resume-frontend-bay.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]
