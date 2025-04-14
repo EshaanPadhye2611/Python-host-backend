@@ -122,35 +122,7 @@ def prompt_ai(prompt):
 
 # ----------- LinkedIn Job Fetch -----------
 
-def get_jobs_from_linkedin_multiple_queries(queries, location="Remote"):
-    options = Options()
-    options.add_argument("--headless")
-    options.add_argument("--disable-gpu")
-    options.add_argument("--no-sandbox")
-    options.binary_location = "/usr/bin/google-chrome"  # Path to Chrome binary in Render environment
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-    
-    job_list = []
-    for query in queries:
-        try:
-            search_url = f"https://www.linkedin.com/jobs/search/?keywords={query.replace(' ', '%20')}&location={location}"
-            driver.get(search_url)
-            time.sleep(5)
-            job_elements = driver.find_elements(By.CLASS_NAME, "base-card")
-            for job in job_elements[:5]:
-                try:
-                    title = job.find_element(By.CLASS_NAME, "base-search-card__title").text.strip()
-                    company = job.find_element(By.CLASS_NAME, "base-search-card__subtitle").text.strip()
-                    location = job.find_element(By.CLASS_NAME, "job-search-card__location").text.strip()
-                    job_list.append({"title": title, "company": company, "location": location})
-                except:
-                    continue
-            if job_list:
-                break
-        except Exception:
-            continue
-    driver.quit()
-    return job_list if job_list else [{"title": "No jobs found", "company": "", "location": ""}]
+
 
 # ----------- API Endpoint -----------
 
@@ -173,7 +145,7 @@ async def analyze_resume(file: UploadFile = File(...), job_description: str = Fo
 
     skills = details.get("technical_skills", [])
     keywords_for_jobs = skills if skills else ["Web Developer"]
-    matched_jobs = get_jobs_from_linkedin_multiple_queries(keywords_for_jobs)
+   
 
     combined_prompt = f"Job Description:\n{job_description}\n\nResume Content:\n{resume_text[:3000]}"
 
@@ -185,8 +157,8 @@ async def analyze_resume(file: UploadFile = File(...), job_description: str = Fo
         "final_score": round(len(details["experience"]) * 0.4 + len(details["technical_skills"]) * 0.3 + len(details["projects"]) * 0.2 + 0.1, 2),
         "cover_letter": prompt_ai(f"Write a cover letter based on the following:\n{combined_prompt}"),
         "proofreading": prompt_ai(f"Proofread this resume considering the job:\n{combined_prompt}"),
-        "ai_feedback": prompt_ai(f"Give constructive and detailed feedback for improving this resume for the job:\n{combined_prompt}"),
-        "linkedin_jobs": matched_jobs
+        "ai_feedback": prompt_ai(f"Give constructive and detailed feedback for improving this resume for the job:\n{combined_prompt}")
+     
     })
 
     return details
