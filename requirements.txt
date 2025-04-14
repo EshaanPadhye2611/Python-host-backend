@@ -1,3 +1,4 @@
+// filepath: c:\Users\eshaan\OneDrive\Desktop\python-backend\Backend-Python\requirements.txt
 fastapi
 uvicorn
 pymongo
@@ -13,3 +14,4 @@ PyPDF2
 python-docx
 scikit-learn
 PyMuPDF
+python-multipart
